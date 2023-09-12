@@ -1,7 +1,10 @@
 package br.com.profectum.model;
 
+import br.com.profectum.enums.RoleUsuarios;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,9 +28,13 @@ public class Usuario {
 	@Column(name = "nome")
 	private String nome;
 	
+	@Column(name = "login")
+	private String login;
+	
 	@Column(name = "senha")
 	private String senha;
 	
-	@Column(name = "role_usuario")
-	private String roleUsuario;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role_usuario", nullable = false)
+	private RoleUsuarios roleUsuario;
 }

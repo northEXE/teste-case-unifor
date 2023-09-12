@@ -27,6 +27,15 @@ public class Disciplina {
 	@Column(name = "nome_disciplina")
 	private String nomeDisciplina;
 	
+	@Column(name = "professor_responsavel")
+	private String professorResponsavel;
+	
+	@Column(name = "localizacao")
+	private String localizacao;
+	
+	@Column(name = "carga_horaria")
+	private Integer cargaHoraria;
+	
 	@Column(name = "descricao")
 	private String descricao;
 }

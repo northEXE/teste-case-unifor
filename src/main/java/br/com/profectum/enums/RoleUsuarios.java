@@ -1,5 +1,8 @@
 package br.com.profectum.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RoleUsuarios {
 	USUARIO_MASTER("USUARIO"),
 	ADMIN("ADMIN"),
