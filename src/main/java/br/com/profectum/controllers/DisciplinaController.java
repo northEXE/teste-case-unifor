@@ -1,7 +1,15 @@
 package br.com.profectum.controllers;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
+ * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
+ * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
+ * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
+ * os dados de entidade da camada do cliente.
+ */
+
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +56,7 @@ public class DisciplinaController {
 	}
 	
 	@GetMapping(path = "/buscar")
-	public ResponseEntity<Object> buscarDisciplina(@RequestParam UUID idDisciplina) {
+	public ResponseEntity<Object> buscarDisciplina(@RequestParam Long idDisciplina) {
 		try {
 			Optional<Disciplina> disciplina = service.buscarDisciplinaPorId(idDisciplina);
 			return ResponseEntity.ok(disciplina);
@@ -58,7 +66,7 @@ public class DisciplinaController {
 	}
 	
 	@PutMapping(path = "/{idDisciplina}/atualizar")
-	public ResponseEntity<? extends Object> atualizarDisciplina(@PathVariable UUID idDisciplina, @RequestBody DisciplinaDTO dto) {
+	public ResponseEntity<? extends Object> atualizarDisciplina(@PathVariable Long idDisciplina, @RequestBody DisciplinaDTO dto) {
 		if (service.verificarListaDeDisciplinas().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
@@ -78,7 +86,7 @@ public class DisciplinaController {
 	}
 	
 	@DeleteMapping(path = "/deletar/{idDisciplina}")
-	public ResponseEntity<? extends Object> deletarDisciplina(@PathVariable UUID idDisciplina) {
+	public ResponseEntity<? extends Object> deletarDisciplina(@PathVariable Long idDisciplina) {
 		if (service.verificarListaDeDisciplinas().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		

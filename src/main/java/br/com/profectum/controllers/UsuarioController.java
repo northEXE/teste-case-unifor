@@ -1,5 +1,14 @@
 package br.com.profectum.controllers;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
+ * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
+ * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
+ * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
+ * os dados de entidade da camada do cliente.
+ */
+
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,5 @@
 package br.com.profectum.repositories;
 
-import java.util.UUID;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +8,6 @@ import jakarta.transaction.Transactional;
 
 @Transactional
 @Repository
-public interface CursoRepository extends JpaRepository<Curso, UUID>{
+public interface CursoRepository extends JpaRepository<Curso, Long>{
 
 }

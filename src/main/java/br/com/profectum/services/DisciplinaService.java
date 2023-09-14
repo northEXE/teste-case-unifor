@@ -1,8 +1,16 @@
 package br.com.profectum.services;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Nesta classe encontramos a camada de serviço. Como o projeto é um CRUD padrão usando Spring Data,
+ * JPA e Hibernate, é uma solução padrão de manipulação dos dados, onde há tratamento de dados com chaves
+ * estrangeiras, relações de N para N (como pode ser visto na camada de entidade) e manipulação de listas.
+ * Fica como ponto de melhoria criar queries personalizadas para diminuir e/ou excluir o uso de estruturas
+ * de repetição para a manipulação dos dados, afim de melhorar a complexidade de execução da aplicação.
+ */
+
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,7 +42,7 @@ public class DisciplinaService {
 		return ResponseEntity.ok(disciplinas);
 	}
 	
-	public Optional<Disciplina> buscarDisciplinaPorId(UUID idDisciplina) {
+	public Optional<Disciplina> buscarDisciplinaPorId(Long idDisciplina) {
 		if (idDisciplina.toString().isEmpty() || idDisciplina.toString().isBlank()) 
 			throw new RegraNegocioException(ErrosEnum.ERRO_006.getMensagemErro());
 		
@@ -45,11 +53,11 @@ public class DisciplinaService {
 		return disciplina;
 	}
 
-	public Disciplina atualizarDisciplina(UUID idDisciplina, Disciplina disciplinaModificado) {
+	public Disciplina atualizarDisciplina(Long idDisciplina, Disciplina disciplinaModificado) {
 		return repository.save(disciplinaModificado);
 	}
 
-	public void deletarDisciplina(UUID idDisciplina) {
+	public void deletarDisciplina(Long idDisciplina) {
 		if (idDisciplina.toString().isEmpty() || idDisciplina.toString().isBlank()) 
 			throw new RegraNegocioException(ErrosEnum.ERRO_006.getMensagemErro());
 		
@@ -65,9 +73,13 @@ public class DisciplinaService {
 		Disciplina disciplina = Disciplina.builder()
 				.nomeDisciplina(dto.getNomeDisciplina())
 				.cargaHoraria(dto.getCargaHoraria())
+				.professorResponsavel(dto.getProfessorResponsavel())
+				.horario(dto.getHorario())
+				.diasSemana(dto.getDiasSemana())
+				.periodo(dto.getPeriodo())
+				.localizacao(dto.getLocalizacao())
 				.descricao(dto.getDescricao()).build();
 				
-
 		return disciplina;
 	}
 	
@@ -75,7 +87,7 @@ public class DisciplinaService {
 		return repository.findAll();
 	}
 	
-	public boolean verificarExistencia(UUID idDisciplina){
+	public boolean verificarExistencia(Long idDisciplina){
 		Optional<Disciplina> disciplina = repository.findById(idDisciplina);
 		if(disciplina.isPresent())
 			return true;

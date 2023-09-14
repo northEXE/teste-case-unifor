@@ -1,15 +1,13 @@
 package br.com.profectum.model;
 
 import java.util.List;
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +21,9 @@ import lombok.NoArgsConstructor;
 public class Semestre {
 	
 	@Id
-	@GeneratedValue(strategy =  GenerationType.UUID)
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	@Column(name = "id_semestre")
-	private UUID idSemestre;
+	private Long idSemestre;
 	
 	@Column(name = "nome_semestre")
 	private String nomeSemestre;
@@ -33,9 +31,9 @@ public class Semestre {
 	@Column (name = "parcial_horas")
 	private Integer parcialHoras;
 	
-	@OneToOne
-	private Curso curso;
+	@Column (name = "curso")
+	private String curso;
 	
-	@OneToMany
+	@ManyToMany
 	private List<Disciplina> disciplinas;
 }

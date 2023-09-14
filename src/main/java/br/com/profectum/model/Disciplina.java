@@ -1,9 +1,10 @@
 package br.com.profectum.model;
 
-import java.util.UUID;
-
+import br.com.profectum.enums.PeriodoEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,15 +21,25 @@ import lombok.NoArgsConstructor;
 public class Disciplina {
 
 	@Id
-	@GeneratedValue(strategy =  GenerationType.UUID)
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	@Column(name = "id_disciplina")
-	private UUID idDisciplina;
+	private Long idDisciplina;
 	
 	@Column(name = "nome_disciplina")
 	private String nomeDisciplina;
 	
 	@Column(name = "professor_responsavel")
 	private String professorResponsavel;
+	
+	@Column(name = "horario")
+	private String horario;
+	
+	@Column(name = "diasSemana")
+	private String diasSemana;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "periodo")
+	private PeriodoEnum periodo;
 	
 	@Column(name = "localizacao")
 	private String localizacao;

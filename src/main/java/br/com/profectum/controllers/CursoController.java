@@ -1,7 +1,15 @@
 package br.com.profectum.controllers;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
+ * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
+ * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
+ * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
+ * os dados de entidade da camada do cliente.
+ */
+
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +56,7 @@ public class CursoController {
 	}
 	
 	@GetMapping(path = "/buscar")
-	public ResponseEntity<Object> buscarCurso(@RequestParam UUID idCurso) {
+	public ResponseEntity<Object> buscarCurso(@RequestParam Long idCurso) {
 		try {
 			Optional<Curso> curso = service.buscarCursoPorId(idCurso);
 			return ResponseEntity.ok(curso);
@@ -58,8 +66,8 @@ public class CursoController {
 	}
 	
 	@PutMapping(path = "/{idCurso}/atualizar")
-	public ResponseEntity<? extends Object> atualizarCurso(@PathVariable UUID idCurso, @RequestBody CursoDTO dto) {
-		if (service.verificarListaDeCursos().size() == 0)
+	public ResponseEntity<? extends Object> atualizarCurso(@PathVariable Long idCurso, @RequestBody CursoDTO dto) {
+		if (service.verificarCursos().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
 		if(service.verificarExistencia(idCurso) == false)
@@ -69,7 +77,7 @@ public class CursoController {
 			try {
 				Curso curso = service.converterDeDTO(dto);
 				curso.setIdCurso(entidade.getIdCurso());
-				service.atualizarCurso(idCurso, curso);
+				service.atualizarCurso(idCurso, curso, dto);
 				return ResponseEntity.ok(curso);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
@@ -78,8 +86,8 @@ public class CursoController {
 	}
 	
 	@DeleteMapping(path = "/deletar/{idCurso}")
-	public ResponseEntity<? extends Object> deletarCurso(@PathVariable UUID idCurso) {
-		if (service.verificarListaDeCursos().size() == 0)
+	public ResponseEntity<? extends Object> deletarCurso(@PathVariable Long idCurso) {
+		if (service.verificarCursos().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
 		if(service.verificarExistencia(idCurso) == false)

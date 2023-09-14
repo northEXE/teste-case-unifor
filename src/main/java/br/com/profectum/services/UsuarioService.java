@@ -1,5 +1,14 @@
 package br.com.profectum.services;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Nesta classe encontramos a camada de serviço. Como o projeto é um CRUD padrão usando Spring Data,
+ * JPA e Hibernate, é uma solução padrão de manipulação dos dados, onde há tratamento de dados com chaves
+ * estrangeiras, relações de N para N (como pode ser visto na camada de entidade) e manipulação de listas.
+ * Fica como ponto de melhoria criar queries personalizadas para diminuir e/ou excluir o uso de estruturas
+ * de repetição para a manipulação dos dados, afim de melhorar a complexidade de execução da aplicação.
+ */
+
 import java.util.List;
 import java.util.Optional;
 

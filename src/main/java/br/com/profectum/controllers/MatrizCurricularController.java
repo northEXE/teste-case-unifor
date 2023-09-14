@@ -1,5 +1,14 @@
 package br.com.profectum.controllers;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
+ * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
+ * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
+ * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
+ * os dados de entidade da camada do cliente.
+ */
+
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -56,19 +65,19 @@ public class MatrizCurricularController {
 		}
 	}
 	
-	@PutMapping(path = "/{nomeMatrizCurricular}/atualizar")
-	public ResponseEntity<? extends Object> atualizarMatrizCurricular(@PathVariable String nomeMatrizCurricular, @RequestBody MatrizCurricularDTO dto) {
-		if (service.verificarListaDeMatrizCurriculars().size() == 0)
+	@PutMapping(path = "/{idMatrizCurricular}/atualizar")
+	public ResponseEntity<? extends Object> atualizarMatrizCurricular(@PathVariable Long idMatrizCurricular, @RequestBody MatrizCurricularDTO dto) {
+		if (service.verificarMatrizesCurriculares().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
-		if(service.verificarExistencia(nomeMatrizCurricular) == false)
+		if(service.verificarExistencia(idMatrizCurricular) == false)
 			return ResponseErrosUtil.respostaErro002();
 		
-		return service.buscarMatrizCurricularPorNome(nomeMatrizCurricular).map(entidade -> {
+		return service.buscarMatrizCurricularPorId(idMatrizCurricular).map(entidade -> {
 			try {
 				MatrizCurricular matrizCurricular = service.converterDeDTO(dto);
 				matrizCurricular.setIdMatrizCurricular(entidade.getIdMatrizCurricular());
-				service.atualizarMatrizCurricular(nomeMatrizCurricular, matrizCurricular);
+				service.atualizarMatrizCurricular(idMatrizCurricular, matrizCurricular, dto);
 				return ResponseEntity.ok(matrizCurricular);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
@@ -76,17 +85,17 @@ public class MatrizCurricularController {
 		}).orElseGet(() -> new ResponseEntity<Object>(ErrosEnum.ERRO_003.getMensagemErro(), HttpStatus.BAD_REQUEST));
 	}
 	
-	@DeleteMapping(path = "/deletar/{nomeMatrizCurricular}")
-	public ResponseEntity<? extends Object> deletarMatrizCurricular(@PathVariable String nomeMatrizCurricular) {
-		if (service.verificarListaDeMatrizCurriculars().size() == 0)
+	@DeleteMapping(path = "/deletar/{idMatrizCurricular}")
+	public ResponseEntity<? extends Object> deletarMatrizCurricular(@PathVariable Long idMatrizCurricular) {
+		if (service.verificarMatrizesCurriculares().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
-		if(service.verificarExistencia(nomeMatrizCurricular) == false)
+		if(service.verificarExistencia(idMatrizCurricular) == false)
 			return ResponseErrosUtil.respostaErro002();
 		
-		return service.buscarMatrizCurricularPorNome(nomeMatrizCurricular).map(entidade -> {
+		return service.buscarMatrizCurricularPorId(idMatrizCurricular).map(entidade -> {
 			try {
-				service.deletarMatrizCurricular(nomeMatrizCurricular);
+				service.deletarMatrizCurricular(idMatrizCurricular);
 				return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,5 +1,12 @@
 package br.com.profectum.enums;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Para definir as roles, é bastante comum usar enums justamente por conseguir
+ * padronizar os dados. Gerlamente, as roles são dados estáticos, logo, quanto
+ * mais padronizado, mais fácil fica de controlar e manter.
+ */
+
 import lombok.Getter;
 
 @Getter

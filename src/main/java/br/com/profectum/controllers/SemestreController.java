@@ -1,5 +1,15 @@
 package br.com.profectum.controllers;
 
+/**
+ * @author Wendel Ferreira de Mesquita
+ * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
+ * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
+ * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
+ * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
+ * os dados de entidade da camada do cliente.
+ */
+
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -29,7 +39,7 @@ public class SemestreController {
 	public SemestreController(SemestreService service) {
 		this.service = service;
 	}
-	
+
 	@PostMapping(path = "/salvar")
 	public ResponseEntity<Object> salvarSemestre(@RequestBody SemestreDTO dto) {
 		try {
@@ -40,12 +50,12 @@ public class SemestreController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<Object> listarTodosOsSemestres() {
 		return service.listarTodosOsSemestres();
 	}
-	
+
 	@GetMapping(path = "/buscar")
 	public ResponseEntity<Object> buscarSemestre(@RequestParam String nomeSemestre) {
 		try {
@@ -55,38 +65,58 @@ public class SemestreController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
-	@PutMapping(path = "/{nomeSemestre}/atualizar")
-	public ResponseEntity<? extends Object> atualizarSemestre(@PathVariable String nomeSemestre, @RequestBody SemestreDTO dto) {
-		if (service.verificarListaDeSemestres().size() == 0)
+
+	@PutMapping(path = "/{idSemestre}/atualizar")
+	public ResponseEntity<? extends Object> atualizarSemestre(@PathVariable Long idSemestre,
+			@RequestBody SemestreDTO dto) {
+		if (service.verificarSemestres().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
-		
-		if(service.verificarExistencia(nomeSemestre) == false)
+
+		if (service.verificarExistencia(idSemestre) == false)
 			return ResponseErrosUtil.respostaErro002();
-		
-		return service.buscarSemestrePorNome(nomeSemestre).map(entidade -> {
+
+		return service.buscarSemestrePorId(idSemestre).map(entidade -> {
 			try {
 				Semestre semestre = service.converterDeDTO(dto);
 				semestre.setIdSemestre(entidade.getIdSemestre());
-				service.atualizarSemestre(nomeSemestre, semestre);
+				service.atualizarSemestre(idSemestre, semestre, dto);
 				return ResponseEntity.ok(semestre);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
 			}
 		}).orElseGet(() -> new ResponseEntity<Object>(ErrosEnum.ERRO_003.getMensagemErro(), HttpStatus.BAD_REQUEST));
 	}
-	
-	@DeleteMapping(path = "/deletar/{nomeSemestre}")
-	public ResponseEntity<? extends Object> deletarSemestre(@PathVariable String nomeSemestre) {
-		if (service.verificarListaDeSemestres().size() == 0)
+
+	@PutMapping(path = "/{idSemestre}/remover-disciplinas")
+	public ResponseEntity<? extends Object> adicionarDisciplina(@PathVariable Long idSemestre,
+			@RequestBody List<Long> idDisciplina) {
+		if (service.verificarSemestres().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
-		
-		if(service.verificarExistencia(nomeSemestre) == false)
+
+		if (service.verificarExistencia(idSemestre) == false)
 			return ResponseErrosUtil.respostaErro002();
-		
-		return service.buscarSemestrePorNome(nomeSemestre).map(entidade -> {
+
+		return service.buscarSemestrePorId(idSemestre).map(entidade -> {
 			try {
-				service.deletarSemestre(nomeSemestre);
+				Semestre semestre = service.removerDisciplinas(idDisciplina, entidade);
+				return ResponseEntity.ok(semestre);
+			} catch (RegraNegocioException e) {
+				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
+			}
+		}).orElseGet(() -> new ResponseEntity<Object>(ErrosEnum.ERRO_003.getMensagemErro(), HttpStatus.BAD_REQUEST));
+	}
+
+	@DeleteMapping(path = "/deletar/{idSemestre}")
+	public ResponseEntity<? extends Object> deletarSemestre(@PathVariable Long idSemestre) {
+		if (service.verificarSemestres().size() == 0)
+			return ResponseErrosUtil.respostaErro004();
+
+		if (service.verificarExistencia(idSemestre) == false)
+			return ResponseErrosUtil.respostaErro002();
+
+		return service.buscarSemestrePorId(idSemestre).map(entidade -> {
+			try {
+				service.deletarSemestre(idSemestre);
 				return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
