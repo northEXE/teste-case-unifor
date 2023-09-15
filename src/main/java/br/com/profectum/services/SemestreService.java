@@ -46,17 +46,6 @@ public class SemestreService {
 		return ResponseEntity.ok(semestres);
 	}
 
-	public Optional<Semestre> buscarSemestrePorNome(String nomeSemestre) {
-		if (nomeSemestre.isEmpty() || nomeSemestre.isBlank())
-			throw new RegraNegocioException(ErrosEnum.ERRO_006.getMensagemErro());
-
-		Optional<Semestre> semestre = repository.findByNomeSemestre(nomeSemestre);
-		if (!semestre.isPresent())
-			throw new RegraNegocioException(ErrosEnum.ERRO_003.getMensagemErro());
-
-		return semestre;
-	}
-
 	public Optional<Semestre> buscarSemestrePorId(Long idSemestre) {
 		if (idSemestre.toString().isEmpty() || idSemestre.toString().isBlank())
 			throw new RegraNegocioException(ErrosEnum.ERRO_006.getMensagemErro());

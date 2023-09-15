@@ -57,9 +57,9 @@ public class SemestreController {
 	}
 
 	@GetMapping(path = "/buscar")
-	public ResponseEntity<Object> buscarSemestre(@RequestParam String nomeSemestre) {
+	public ResponseEntity<Object> buscarSemestre(@RequestParam Long idSemestre) {
 		try {
-			Optional<Semestre> semestre = service.buscarSemestrePorNome(nomeSemestre);
+			Optional<Semestre> semestre = service.buscarSemestrePorId(idSemestre);
 			return ResponseEntity.ok(semestre);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
