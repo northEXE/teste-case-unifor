@@ -56,9 +56,9 @@ public class MatrizCurricularController {
 	}
 	
 	@GetMapping(path = "/buscar")
-	public ResponseEntity<Object> buscarMatrizCurricular(@RequestParam String nomeMatrizCurricular) {
+	public ResponseEntity<Object> buscarMatrizCurricular(@RequestParam Long idMatrizCurricular) {
 		try {
-			Optional<MatrizCurricular> matrizCurricular = service.buscarMatrizCurricularPorNome(nomeMatrizCurricular);
+			Optional<MatrizCurricular> matrizCurricular = service.buscarMatrizCurricularPorId(idMatrizCurricular);
 			return ResponseEntity.ok(matrizCurricular);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

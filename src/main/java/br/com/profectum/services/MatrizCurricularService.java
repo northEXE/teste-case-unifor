@@ -48,17 +48,6 @@ public class MatrizCurricularService {
 		return ResponseEntity.ok(matrizCurriculars);
 	}
 	
-	public Optional<MatrizCurricular> buscarMatrizCurricularPorNome(String nomeMatrizCurricular) {
-		if (nomeMatrizCurricular.isEmpty() || nomeMatrizCurricular.isBlank()) 
-			throw new RegraNegocioException(ErrosEnum.ERRO_006.getMensagemErro());
-		
-		Optional<MatrizCurricular> matrizCurricular = repository.findByNomeMatrizCurricular(nomeMatrizCurricular);
-		if (!matrizCurricular.isPresent())
-			throw new RegraNegocioException(ErrosEnum.ERRO_003.getMensagemErro());
-
-		return matrizCurricular;
-	}
-	
 	public Optional<MatrizCurricular> buscarMatrizCurricularPorId(Long idMatrizCurricular) {
 		if (idMatrizCurricular.toString().isEmpty() || idMatrizCurricular.toString().isBlank()) 
 			throw new RegraNegocioException(ErrosEnum.ERRO_006.getMensagemErro());
