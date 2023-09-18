@@ -1,5 +1,7 @@
 package br.com.profectum.services;
 
+import java.util.ArrayList;
+
 /**
  * @author Wendel Ferreira de Mesquita
  * Nesta classe encontramos a camada de serviço. Como o projeto é um CRUD padrão usando Spring Data,
@@ -15,12 +17,13 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.profectum.dto.DisciplinaDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.enums.InfoEnums;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Disciplina;
 import br.com.profectum.repositories.DisciplinaRepository;
+import br.com.profectum.requestDTO.DisciplinaRequestDTO;
+import br.com.profectum.responseDTO.DisciplinaResponseDTO;
 
 @Service
 public class DisciplinaService {
@@ -34,12 +37,17 @@ public class DisciplinaService {
 		return repository.save(disciplina);
 	}
 
-	public ResponseEntity<Object> listarTodosOsDisciplinas() {
+	public ResponseEntity<Object> listarTodasAsDisciplinas() {
 		List<Disciplina> disciplinas = verificarListaDeDisciplinas();
 		if (disciplinas.size() == 0) 
 			return ResponseEntity.ok().body(InfoEnums.INFO_001.getMensagem());
 		
-		return ResponseEntity.ok(disciplinas);
+		List<DisciplinaResponseDTO> dto = new ArrayList<DisciplinaResponseDTO>();
+		disciplinas.forEach(e -> {
+			dto.add(converterParaDTO(e));
+		});
+		
+		return ResponseEntity.ok(dto);
 	}
 	
 	public Optional<Disciplina> buscarDisciplinaPorId(Long idDisciplina) {
@@ -68,7 +76,7 @@ public class DisciplinaService {
 		repository.delete(disciplina);
 	}
 	
-	public Disciplina converterDeDTO(DisciplinaDTO dto) {
+	public Disciplina converterDeDTO(DisciplinaRequestDTO dto) {
 		 
 		Disciplina disciplina = Disciplina.builder()
 				.nomeDisciplina(dto.getNomeDisciplina())
@@ -81,6 +89,10 @@ public class DisciplinaService {
 				.descricao(dto.getDescricao()).build();
 				
 		return disciplina;
+	}
+	
+	public DisciplinaResponseDTO converterParaDTO(Disciplina disciplina) {
+		return new DisciplinaResponseDTO(disciplina);
 	}
 	
 	public List<Disciplina> verificarListaDeDisciplinas() {

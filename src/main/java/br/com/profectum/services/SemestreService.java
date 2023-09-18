@@ -16,13 +16,14 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.profectum.dto.SemestreDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.enums.InfoEnums;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Disciplina;
 import br.com.profectum.model.Semestre;
 import br.com.profectum.repositories.SemestreRepository;
+import br.com.profectum.requestDTO.SemestreRequestDTO;
+import br.com.profectum.responseDTO.SemestreResponseDTO;
 
 @Service
 public class SemestreService {
@@ -42,8 +43,13 @@ public class SemestreService {
 		List<Semestre> semestres = verificarSemestres();
 		if (semestres.size() == 0)
 			return ResponseEntity.ok().body(InfoEnums.INFO_001.getMensagem());
+		
+		List<SemestreResponseDTO> dto = new ArrayList<SemestreResponseDTO>();
+		semestres.forEach(e -> {
+			dto.add(converterParaDTO(e));
+		});
 
-		return ResponseEntity.ok(semestres);
+		return ResponseEntity.ok(dto);
 	}
 
 	public Optional<Semestre> buscarSemestrePorId(Long idSemestre) {
@@ -57,7 +63,7 @@ public class SemestreService {
 		return semestre;
 	}
 
-	public Semestre atualizarSemestre(Long idSemestre, Semestre semestreModificado, SemestreDTO dto) {
+	public Semestre atualizarSemestre(Long idSemestre, Semestre semestreModificado, SemestreRequestDTO dto) {
 		Optional<Semestre> semestre = buscarSemestrePorId(idSemestre);
 		
 		if(dto.getNomeSemestre() == null || dto.getCurso() == null) {
@@ -114,7 +120,7 @@ public class SemestreService {
 		return repository.save(semestre);
 	}
 
-	public Semestre converterDeDTO(SemestreDTO dto) {
+	public Semestre converterDeDTO(SemestreRequestDTO dto) {
 
 		if (dto.getIdsDisciplinas() != null) {
 			Semestre semestre = Semestre.builder()
@@ -133,6 +139,10 @@ public class SemestreService {
 				.parcialHoras(0).build();
 		
 		return semestre;
+	}
+	
+	public SemestreResponseDTO converterParaDTO(Semestre semestre) {
+		return new SemestreResponseDTO(semestre);
 	}
 
 	public List<Semestre> verificarSemestres() {

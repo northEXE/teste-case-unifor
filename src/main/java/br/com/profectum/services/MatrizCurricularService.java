@@ -16,13 +16,14 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.profectum.dto.MatrizCurricularDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.enums.InfoEnums;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Curso;
 import br.com.profectum.model.MatrizCurricular;
 import br.com.profectum.repositories.MatrizCurricularRepository;
+import br.com.profectum.requestDTO.MatrizCurricularRequestDTO;
+import br.com.profectum.responseDTO.MatrizCurricularResponseDTO;
 
 @Service
 public class MatrizCurricularService {
@@ -40,12 +41,16 @@ public class MatrizCurricularService {
 		return repository.save(matrizCurricular);
 	}
 
-	public ResponseEntity<Object> listarTodosOsMatrizCurriculars() {
-		List<MatrizCurricular> matrizCurriculars = verificarMatrizesCurriculares();
-		if (matrizCurriculars.size() == 0) 
+	public ResponseEntity<Object> listarTodasAsMatrizesCurriculares() {
+		List<MatrizCurricular> matrizes = verificarMatrizesCurriculares();
+		if (matrizes.size() == 0) 
 			return ResponseEntity.ok().body(InfoEnums.INFO_001.getMensagem());
 		
-		return ResponseEntity.ok(matrizCurriculars);
+		List<MatrizCurricularResponseDTO> dto = new ArrayList<MatrizCurricularResponseDTO>();
+		matrizes.forEach(e -> {
+			dto.add(converterParaDTO(e));
+		});
+		return ResponseEntity.ok(dto);
 	}
 	
 	public Optional<MatrizCurricular> buscarMatrizCurricularPorId(Long idMatrizCurricular) {
@@ -59,7 +64,7 @@ public class MatrizCurricularService {
 		return matrizCurricular;
 	}
 
-	public MatrizCurricular atualizarMatrizCurricular(Long idMatrizCurricular, MatrizCurricular matrizCurricularModificada, MatrizCurricularDTO dto) {
+	public MatrizCurricular atualizarMatrizCurricular(Long idMatrizCurricular, MatrizCurricular matrizCurricularModificada, MatrizCurricularRequestDTO dto) {
 		Optional<MatrizCurricular> matrizCurricular = buscarMatrizCurricularPorId(idMatrizCurricular);
 		if(dto.getNomeMatrizCurricular() == null)
 			matrizCurricularModificada.setNomeMatrizCurricular(matrizCurricular.get().getNomeMatrizCurricular());
@@ -95,7 +100,7 @@ public class MatrizCurricularService {
 		repository.delete(matrizCurricular);
 	}
 	
-	public MatrizCurricular converterDeDTO(MatrizCurricularDTO dto) {
+	public MatrizCurricular converterDeDTO(MatrizCurricularRequestDTO dto) {
 		
 		if(dto.getIdsCursos() != null) {
 			MatrizCurricular matrizCurricular = MatrizCurricular.builder()
@@ -109,6 +114,10 @@ public class MatrizCurricularService {
 				.nomeMatrizCurricular(dto.getNomeMatrizCurricular()).build();
 
 		return matrizCurricular;
+	}
+	
+	public MatrizCurricularResponseDTO converterParaDTO(MatrizCurricular matriz) {
+		return new MatrizCurricularResponseDTO(matriz);
 	}
 	
 	public List<MatrizCurricular> verificarMatrizesCurriculares() {

@@ -4,9 +4,9 @@ package br.com.profectum.controllers;
  * @author Wendel Ferreira de Mesquita
  * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
  * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
- * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
- * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
- * os dados de entidade da camada do cliente.
+ * o design pattern DTO,  tanto para request, quanto para a response.
+ * A ResponseEntity é do tipo Object por causa das diferentes respostas que podem ser dadas, desde um código HTTP 
+ * com os objetos, até códigos HTTP com string como respostas.
  */
 
 import java.util.Optional;
@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.profectum.dto.UsuarioDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Usuario;
+import br.com.profectum.requestDTO.UsuarioRequestDTO;
 import br.com.profectum.services.UsuarioService;
 import br.com.profectum.utils.ResponseErrosUtil;
 
@@ -40,11 +40,11 @@ public class UsuarioController {
 	}
 	
 	@PostMapping(path = "/salvar")
-	public ResponseEntity<Object> salvarUsuario(@RequestBody UsuarioDTO dto) {
+	public ResponseEntity<Object> salvarUsuario(@RequestBody UsuarioRequestDTO dto) {
 		try {
 			Usuario usuario = service.converterDeDTO(dto);
 			usuario = service.criarUsuario(usuario);
-			return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+			return new ResponseEntity<>(service.converterParaDTO(usuario), HttpStatus.CREATED);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -59,14 +59,14 @@ public class UsuarioController {
 	public ResponseEntity<Object> buscarUsuario(@RequestParam String login) {
 		try {
 			Optional<Usuario> usuario = service.buscarUsuarioPorLogin(login);
-			return ResponseEntity.ok(usuario);
+			return ResponseEntity.ok(service.converterParaDTO(usuario.get()));
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@PutMapping(path = "/{login}/atualizar")
-	public ResponseEntity<? extends Object> atualizarUsuario(@PathVariable String login, @RequestBody UsuarioDTO dto) {
+	public ResponseEntity<? extends Object> atualizarUsuario(@PathVariable String login, @RequestBody UsuarioRequestDTO dto) {
 		if (service.verificarListaDeUsuarios().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
@@ -78,7 +78,7 @@ public class UsuarioController {
 				Usuario usuario = service.converterDeDTO(dto);
 				usuario.setIdUsuario(entidade.getIdUsuario());
 				service.atualizarUsuario(login, usuario);
-				return ResponseEntity.ok(usuario);
+				return ResponseEntity.ok(service.converterParaDTO(usuario));
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
 			}
@@ -96,7 +96,7 @@ public class UsuarioController {
 		return service.buscarUsuarioPorLogin(login).map(entidade -> {
 			try {
 				service.deletarUsuario(login);
-				return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<Object>("Deletado com sucesso",HttpStatus.OK);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}

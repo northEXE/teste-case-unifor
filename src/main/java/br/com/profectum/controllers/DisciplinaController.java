@@ -4,15 +4,17 @@ package br.com.profectum.controllers;
  * @author Wendel Ferreira de Mesquita
  * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
  * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
- * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
- * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
- * os dados de entidade da camada do cliente.
+ * o design pattern DTO, tanto para request, quanto para a response.
+ * A ResponseEntity é do tipo Object por causa das diferentes respostas que podem ser dadas, desde um código HTTP 
+ * com os objetos, até códigos HTTP com string como respostas. 
  */
+
 
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,15 +25,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.profectum.dto.DisciplinaDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Disciplina;
+import br.com.profectum.requestDTO.DisciplinaRequestDTO;
 import br.com.profectum.services.DisciplinaService;
 import br.com.profectum.utils.ResponseErrosUtil;
 
 @RestController
 @RequestMapping(path = "disciplinas")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DisciplinaController {
 	private DisciplinaService service;
 
@@ -40,33 +43,33 @@ public class DisciplinaController {
 	}
 	
 	@PostMapping(path = "/salvar")
-	public ResponseEntity<Object> salvarDisciplina(@RequestBody DisciplinaDTO dto) {
+	public ResponseEntity<Object> salvarDisciplina(@RequestBody DisciplinaRequestDTO dto) {
 		try {
 			Disciplina disciplina = service.converterDeDTO(dto);
 			disciplina = service.criarDisciplina(disciplina);
-			return new ResponseEntity<>(disciplina, HttpStatus.CREATED);
+			return new ResponseEntity<>(service.converterParaDTO(disciplina), HttpStatus.CREATED);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@GetMapping
-	public ResponseEntity<Object> listarTodosOsDisciplinas() {
-		return service.listarTodosOsDisciplinas();
+	public ResponseEntity<Object> listarTodosAsDisciplinas() {
+		return service.listarTodasAsDisciplinas();
 	}
 	
 	@GetMapping(path = "/buscar")
 	public ResponseEntity<Object> buscarDisciplina(@RequestParam Long idDisciplina) {
 		try {
 			Optional<Disciplina> disciplina = service.buscarDisciplinaPorId(idDisciplina);
-			return ResponseEntity.ok(disciplina);
+			return ResponseEntity.ok(service.converterParaDTO(disciplina.get()));
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@PutMapping(path = "/{idDisciplina}/atualizar")
-	public ResponseEntity<? extends Object> atualizarDisciplina(@PathVariable Long idDisciplina, @RequestBody DisciplinaDTO dto) {
+	public ResponseEntity<? extends Object> atualizarDisciplina(@PathVariable Long idDisciplina, @RequestBody DisciplinaRequestDTO dto) {
 		if (service.verificarListaDeDisciplinas().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
@@ -78,7 +81,7 @@ public class DisciplinaController {
 				Disciplina disciplina = service.converterDeDTO(dto);
 				disciplina.setIdDisciplina(entidade.getIdDisciplina());
 				service.atualizarDisciplina(idDisciplina, disciplina);
-				return ResponseEntity.ok(disciplina);
+				return ResponseEntity.ok(service.converterParaDTO(disciplina));
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
 			}
@@ -96,7 +99,7 @@ public class DisciplinaController {
 		return service.buscarDisciplinaPorId(idDisciplina).map(entidade -> {
 			try {
 				service.deletarDisciplina(idDisciplina);
-				return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<Object>("Disciplina excluída com sucesso!", HttpStatus.OK);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}

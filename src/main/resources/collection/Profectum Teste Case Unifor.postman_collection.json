@@ -1,0 +1,627 @@
+{
+	"info": {
+		"_postman_id": "482aa097-cae5-4ae0-a7d7-736375d46b3d",
+		"name": "Profectum Teste Case Unifor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19136426"
+	},
+	"item": [
+		{
+			"name": "1. Disciplina",
+			"item": [
+				{
+					"name": "Salvar Disciplina",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeDisciplina\": \"Introdução à Engenharia de Software.\",\r\n    \"cargaHoraria\": 64,\r\n    \"professorResponsavel\": \"Diana Borges\",\r\n    \"horario\": \"15:30 - 17:30\",\r\n    \"diasSemana\": \"Quarta - Sexta\",\r\n    \"periodo\": \"VESPERTINO\",\r\n    \"localizacao\": \"S1B1\",\r\n    \"descricao\": \"Disciplina voltada a introdução de engenharia de spftware. Alta prioridade para alunos do 1º Semestre de Engenharia de Software.\"\r\n}\r\n    \r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/disciplinas/salvar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"disciplinas",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos todos as disciplinas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{local}}/disciplinas",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"disciplinas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar disciplina por id (Query Param)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/disciplinas/buscar?idDisciplina=",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"disciplinas",
+								"buscar"
+							],
+							"query": [
+								{
+									"key": "idDisciplina",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar disciplina por id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeDisciplina\": \"DELETAR\",\r\n    \"cargaHoraria\": \"2\",\r\n    \"professorResponsavel\": \"Luiz UX\",\r\n    \"localizacao\": \"S1B1\",\r\n    \"descricao\": \"kgjfnopsdgfuihsndfghusdnhsdh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/disciplinas/{idDisciplina}/atualizar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"disciplinas",
+								"{idDisciplina}",
+								"atualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar disciplina por id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/disciplinas/deletar/{idDisciplina}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"disciplinas",
+								"deletar",
+								"{idDisciplina}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Semestre",
+			"item": [
+				{
+					"name": "Salvar Semestre",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeSemestre\": \"\",\r\n    \"curso\": \"\",\r\n    \"idsDisciplinas\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/semestres/salvar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"semestres",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos todos os semestres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/semestres",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"semestres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar semestre por id (Query Param)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/semestres/buscar?idSemestre=",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"semestres",
+								"buscar"
+							],
+							"query": [
+								{
+									"key": "idSemestre",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar semestre por Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idsDisciplinas\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/semestres/{idSemestre}/atualizar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"semestres",
+								"{idSemestre}",
+								"atualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar semestre por Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/semestres/deletar/{idSemestre}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"semestres",
+								"deletar",
+								"{idSemestre}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir disciplinas do semestre",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n[]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/semestres/{idSemestre}/remover-disciplinas",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"semestres",
+								"{idSemestre}",
+								"remover-disciplinas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Curso",
+			"item": [
+				{
+					"name": "Salvar Curso",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeCurso\": \"\",\r\n    \"idsSemestres\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/cursos/salvar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"cursos",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos todos os Cursos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/cursos",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"cursos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar curso por id (Query Param)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/cursos/buscar?idCurso=",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"cursos",
+								"buscar"
+							],
+							"query": [
+								{
+									"key": "idCurso",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar curso por id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idsSemestres\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/cursos/{idCurso}/atualizar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"cursos",
+								"{idCurso}",
+								"atualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar curso por id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/cursos/deletar/{idCurso}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"cursos",
+								"deletar",
+								"{idCurso}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Matriz Curricular",
+			"item": [
+				{
+					"name": "Salvar Matriz",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeMatrizCurricular\": \"\",\r\n    \"idsCursos\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/matrizes/salvar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"matrizes",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos todos as matrizes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/matrizes",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"matrizes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar matriz por id (Query Param)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/matrizes/buscar?idMatrizCurricular=",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"matrizes",
+								"buscar"
+							],
+							"query": [
+								{
+									"key": "idMatrizCurricular",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar matriz por id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeMatrizCurricular\": \"2024.1.1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/matrizes/{idMatrizCurricular}/atualizar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"matrizes",
+								"{idMatrizCurricular}",
+								"atualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar matriz por id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/matrizes/deletar/{idMatrizCurricular}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"matrizes",
+								"deletar",
+								"{idMatrizCurricular}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuários",
+			"item": [
+				{
+					"name": "Salvar Usuário",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/usuarios/salvar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"usuarios",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos todos os usuários",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/usuarios",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar usuário por login (Query Param)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/usuarios/buscar?login=",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"usuarios",
+								"buscar"
+							],
+							"query": [
+								{
+									"key": "login",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar usuário por login",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/usuarios/{login}/atualizar",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"usuarios",
+								"{login}",
+								"atualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar usuário por login",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/usuarios/deletar/{login}",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"usuarios",
+								"deletar",
+								"{login}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

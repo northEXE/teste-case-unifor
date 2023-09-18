@@ -4,9 +4,9 @@ package br.com.profectum.controllers;
  * @author Wendel Ferreira de Mesquita
  * Na camada Controller, podemos ver como os dados serão enviados e recebidos pelo client-side.
  * Como se trata de uma API, está sendo utilizado ResponseEntity. Para recebimento dos dados, está sendo usado
- * o design pattern DTO, mas pela falta de um externalId para manipulação dos dados, a Response retorna o próprio objeto.
- * Fica como ponto de melhoria usar os DTOs tanto pra entrada, como para a saída dos dados, visando desacoplar completamente
- * os dados de entidade da camada do cliente.
+ * o design pattern DTO,  tanto para request, quanto para a response.
+ * A ResponseEntity é do tipo Object por causa das diferentes respostas que podem ser dadas, desde um código HTTP 
+ * com os objetos, até códigos HTTP com string como respostas.
  */
 
 import java.util.Optional;
@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.profectum.dto.CursoDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Curso;
+import br.com.profectum.requestDTO.CursoRequestDTO;
 import br.com.profectum.services.CursoService;
 import br.com.profectum.utils.ResponseErrosUtil;
 
@@ -40,11 +40,11 @@ public class CursoController {
 	}
 	
 	@PostMapping(path = "/salvar")
-	public ResponseEntity<Object> salvarCurso(@RequestBody CursoDTO dto) {
+	public ResponseEntity<Object> salvarCurso(@RequestBody CursoRequestDTO dto) {
 		try {
 			Curso curso = service.converterDeDTO(dto);
 			curso = service.criarCurso(curso);
-			return new ResponseEntity<>(curso, HttpStatus.CREATED);
+			return new ResponseEntity<>(service.converterParaDTO(curso), HttpStatus.CREATED);
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -59,14 +59,14 @@ public class CursoController {
 	public ResponseEntity<Object> buscarCurso(@RequestParam Long idCurso) {
 		try {
 			Optional<Curso> curso = service.buscarCursoPorId(idCurso);
-			return ResponseEntity.ok(curso);
+			return ResponseEntity.ok(service.converterParaDTO(curso.get()));
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@PutMapping(path = "/{idCurso}/atualizar")
-	public ResponseEntity<? extends Object> atualizarCurso(@PathVariable Long idCurso, @RequestBody CursoDTO dto) {
+	public ResponseEntity<? extends Object> atualizarCurso(@PathVariable Long idCurso, @RequestBody CursoRequestDTO dto) {
 		if (service.verificarCursos().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
 		
@@ -78,7 +78,7 @@ public class CursoController {
 				Curso curso = service.converterDeDTO(dto);
 				curso.setIdCurso(entidade.getIdCurso());
 				service.atualizarCurso(idCurso, curso, dto);
-				return ResponseEntity.ok(curso);
+				return ResponseEntity.ok(service.converterParaDTO(curso));
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getLocalizedMessage());
 			}
@@ -96,7 +96,7 @@ public class CursoController {
 		return service.buscarCursoPorId(idCurso).map(entidade -> {
 			try {
 				service.deletarCurso(idCurso);
-				return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<Object>("Deletado com sucesso", HttpStatus.OK);
 			} catch (RegraNegocioException e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}

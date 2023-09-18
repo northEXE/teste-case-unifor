@@ -1,4 +1,4 @@
-package br.com.profectum.dto;
+package br.com.profectum.requestDTO;
 
 /**
  * @author Wendel Ferreira de Mesquita
@@ -10,15 +10,21 @@ package br.com.profectum.dto;
  * de dados, para desacoplar ainda mais a entidade da visão do cliente.
  */
 
-import java.util.List;
-
+import br.com.profectum.enums.PeriodoEnum;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class CursoDTO {
+public class DisciplinaRequestDTO {
+
+	private String nomeDisciplina;
+	private Integer cargaHoraria;
+	private String professorResponsavel;
+	private String horario;
+	private String diasSemana;
+	private PeriodoEnum periodo;
+	private String localizacao;
+	private String descricao;
 	
-	private String nomeCurso;
-	private List<Long> idsSemestres;
 }

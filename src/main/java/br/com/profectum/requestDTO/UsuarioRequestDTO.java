@@ -1,4 +1,4 @@
-package br.com.profectum.dto;
+package br.com.profectum.requestDTO;
 
 /**
  * @author Wendel Ferreira de Mesquita
@@ -16,7 +16,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UsuarioDTO {
+public class UsuarioRequestDTO {
 	
 	private String login;
 	private String nome;

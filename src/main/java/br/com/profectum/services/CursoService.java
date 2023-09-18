@@ -16,13 +16,14 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.profectum.dto.CursoDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.enums.InfoEnums;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Curso;
 import br.com.profectum.model.Semestre;
 import br.com.profectum.repositories.CursoRepository;
+import br.com.profectum.requestDTO.CursoRequestDTO;
+import br.com.profectum.responseDTO.CursoResponseDTO;
 
 @Service
 public class CursoService {
@@ -42,8 +43,12 @@ public class CursoService {
 		List<Curso> cursos = verificarCursos();
 		if (cursos.size() == 0)
 			return ResponseEntity.ok().body(InfoEnums.INFO_001.getMensagem());
-
-		return ResponseEntity.ok(cursos);
+		
+		List<CursoResponseDTO> dto = new ArrayList<CursoResponseDTO>();
+		cursos.forEach(e -> {
+			dto.add(converterParaDTO(e));
+		});
+		return ResponseEntity.ok(dto);
 	}
 
 	public Optional<Curso> buscarCursoPorId(Long idCurso) {
@@ -57,7 +62,7 @@ public class CursoService {
 		return curso;
 	}
 
-	public Curso atualizarCurso(Long idCurso, Curso cursoModificado, CursoDTO dto) {
+	public Curso atualizarCurso(Long idCurso, Curso cursoModificado, CursoRequestDTO dto) {
 		Optional<Curso> curso = buscarCursoPorId(idCurso);
 		if(dto.getNomeCurso() == null) {
 			cursoModificado.setNomeCurso(curso.get().getNomeCurso());
@@ -94,7 +99,7 @@ public class CursoService {
 		repository.delete(curso);
 	}
 
-	public Curso converterDeDTO(CursoDTO dto) {
+	public Curso converterDeDTO(CursoRequestDTO dto) {
 
 		if (dto.getIdsSemestres() != null) {
 			Curso curso = Curso.builder()
@@ -104,6 +109,10 @@ public class CursoService {
 		}
 		Curso curso = Curso.builder().nomeCurso(dto.getNomeCurso()).build();
 		return curso;
+	}
+	
+	public CursoResponseDTO converterParaDTO(Curso curso) {
+		return new CursoResponseDTO(curso);
 	}
 
 	public List<Curso> verificarCursos() {

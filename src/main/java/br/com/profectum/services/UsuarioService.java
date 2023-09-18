@@ -1,5 +1,7 @@
 package br.com.profectum.services;
 
+import java.util.ArrayList;
+
 /**
  * @author Wendel Ferreira de Mesquita
  * Nesta classe encontramos a camada de serviço. Como o projeto é um CRUD padrão usando Spring Data,
@@ -15,12 +17,13 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.profectum.dto.UsuarioDTO;
 import br.com.profectum.enums.ErrosEnum;
 import br.com.profectum.enums.InfoEnums;
 import br.com.profectum.exceptions.RegraNegocioException;
 import br.com.profectum.model.Usuario;
 import br.com.profectum.repositories.UsuarioRepository;
+import br.com.profectum.requestDTO.UsuarioRequestDTO;
+import br.com.profectum.responseDTO.UsuarioResponseDTO;
 
 @Service
 public class UsuarioService {
@@ -43,7 +46,11 @@ public class UsuarioService {
 		if (usuarios.size() == 0) 
 			return ResponseEntity.ok().body(InfoEnums.INFO_001.getMensagem());
 		
-		return ResponseEntity.ok(usuarios);
+		List<UsuarioResponseDTO> dto = new ArrayList<UsuarioResponseDTO>();
+		usuarios.forEach(e -> {
+			dto.add(converterParaDTO(e));
+		});
+		return ResponseEntity.ok(dto);
 	}
 	
 	public Optional<Usuario> buscarUsuarioPorLogin(String login) {
@@ -72,7 +79,7 @@ public class UsuarioService {
 		repository.delete(usuario);
 	}
 	
-	public Usuario converterDeDTO(UsuarioDTO dto) {
+	public Usuario converterDeDTO(UsuarioRequestDTO dto) {
 		Usuario usuario = Usuario.builder()
 				.login(dto.getLogin())
 				.nome(dto.getNome())
@@ -80,6 +87,11 @@ public class UsuarioService {
 				.roleUsuario(dto.getRoleUsuario()).build();
 
 		return usuario;
+	}
+	
+	public UsuarioResponseDTO converterParaDTO(Usuario usuario) {
+		return new UsuarioResponseDTO(usuario);
+				
 	}
 	
 	public List<Usuario> verificarListaDeUsuarios() {

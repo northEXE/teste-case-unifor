@@ -1,4 +1,4 @@
-package br.com.profectum.dto;
+package br.com.profectum.requestDTO;
 
 /**
  * @author Wendel Ferreira de Mesquita
@@ -17,9 +17,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MatrizCurricularDTO {
-
-	private String nomeMatrizCurricular;
-	private List<Long> idsCursos;
-
+public class CursoRequestDTO {
+	
+	private String nomeCurso;
+	private List<Long> idsSemestres;
 }
