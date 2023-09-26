@@ -12,6 +12,8 @@ package br.com.profectum.controllers;
 
 import java.util.Optional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,6 +45,7 @@ public class DisciplinaController {
 	}
 	
 	@PostMapping(path = "/salvar")
+	@CacheEvict(value = "disciplinas", allEntries = true)
 	public ResponseEntity<Object> salvarDisciplina(@RequestBody DisciplinaRequestDTO dto) {
 		try {
 			Disciplina disciplina = service.converterDeDTO(dto);
@@ -54,6 +57,7 @@ public class DisciplinaController {
 	}
 	
 	@GetMapping
+	@Cacheable(value = "disciplinas")
 	public ResponseEntity<Object> listarTodosAsDisciplinas() {
 		return service.listarTodasAsDisciplinas();
 	}
@@ -69,6 +73,7 @@ public class DisciplinaController {
 	}
 	
 	@PutMapping(path = "/{idDisciplina}/atualizar")
+	@CacheEvict(value = "disciplinas", allEntries = true)
 	public ResponseEntity<? extends Object> atualizarDisciplina(@PathVariable Long idDisciplina, @RequestBody DisciplinaRequestDTO dto) {
 		if (service.verificarListaDeDisciplinas().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
@@ -89,6 +94,7 @@ public class DisciplinaController {
 	}
 	
 	@DeleteMapping(path = "/deletar/{idDisciplina}")
+	@CacheEvict(value = "disciplinas", allEntries = true)
 	public ResponseEntity<? extends Object> deletarDisciplina(@PathVariable Long idDisciplina) {
 		if (service.verificarListaDeDisciplinas().size() == 0)
 			return ResponseErrosUtil.respostaErro004();
